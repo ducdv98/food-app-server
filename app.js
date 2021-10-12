@@ -2,18 +2,22 @@ require("dotenv").config();
 require("./config/database").connect();
 
 const express = require("express");
-const bodyParser = require("body-parser");
+var cors = require("cors");
 
-var authRouter = require("./routes/auth.routes");
+var corsOptions = {
+  origin: "http://localhost:4001",
+  optionsSuccessStatus: 200,
+};
+
+var userRoutes = require("./routes/user.routes");
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.use("/auth", authRouter);
+app.use("/v1/users", userRoutes);
 
 app.use(function (req, res, next) {
   res.status(err.status || 404).json({
