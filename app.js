@@ -4,20 +4,19 @@ require("./config/database").connect();
 const express = require("express");
 var cors = require("cors");
 
-var corsOptions = {
-  origin: "http://localhost:4001",
-  optionsSuccessStatus: 200,
-};
-
-var userRoutes = require("./routes/user.routes");
+const userRoutes = require("./routes/user.routes");
+const dishRoutes = require("./routes/dish.routes");
+const categoryRoutes = require("./routes/category.routes");
 
 const app = express();
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 
 app.use("/v1/users", userRoutes);
+app.use("/v1/dishes", dishRoutes);
+app.use("/v1/categories", categoryRoutes);
 
 app.use(function (req, res, next) {
   res.status(err.status || 404).json({
