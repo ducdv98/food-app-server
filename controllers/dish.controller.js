@@ -12,7 +12,7 @@ const sampleDishes = [
       "https://kfcvietnam.com.vn/uploads/combo/7166d1bee7b66d1e90e7899cda0b03be.jpg",
       "https://kfcvietnam.com.vn/uploads/combo/1eb5c19fa53a45152989923c626feebe.jpg",
     ],
-    type: "fried_roasted_chicken",
+    category: "fried_roasted_chicken",
     price: 68000,
   },
   {
@@ -23,7 +23,7 @@ const sampleDishes = [
       "https://kfcvietnam.com.vn/uploads/combo/b847fbacc79fb14179b5c1e1604fef53.jpg",
       "https://kfcvietnam.com.vn/uploads/combo/b25e3cd3548d8669e2cbc28bcaff8993.jpg",
     ],
-    type: "fried_roasted_chicken",
+    category: "fried_roasted_chicken",
     price: 49000,
   },
   {
@@ -33,7 +33,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/3708a6181f25a1a4e25ed6fe86e2f649.jpg",
     ],
-    type: "fried_roasted_chicken",
+    category: "fried_roasted_chicken",
     price: 68000,
   },
   {
@@ -43,7 +43,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/9886fd4a2c72a01d10b5f4713d00fe73.jpg",
     ],
-    type: "rice_burger",
+    category: "rice_burger",
     price: 41000,
   },
   {
@@ -53,7 +53,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/130dba524bed0e612d77979bfd579ed4.jpg",
     ],
-    type: "rice_burger",
+    category: "rice_burger",
     price: 41000,
   },
   {
@@ -63,7 +63,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/3ddaeb667c13c83a5bcb3d03d6bad726.jpg",
     ],
-    type: "rice_burger",
+    category: "rice_burger",
     price: 41000,
   },
   {
@@ -73,7 +73,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/c21e391e9447babbc5ec76a902b68d88.jpg",
     ],
-    type: "rice_burger",
+    category: "rice_burger",
     price: 42000,
   },
   {
@@ -83,7 +83,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/combo/9cff128ec12ceed884d13a48b2aecc79.jpg",
     ],
-    type: "rice_burger",
+    category: "rice_burger",
     price: 51000,
   },
   {
@@ -93,7 +93,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/e3f046e3043dae1b45ce325f4ba68cec.jpg",
     ],
-    type: "snack",
+    category: "snack",
     price: 29000,
   },
   {
@@ -103,7 +103,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/7e3a9a03ff13da14ba9ee73bc0a4511f.jpg",
     ],
-    type: "snack",
+    category: "snack",
     price: 19000,
   },
   {
@@ -113,7 +113,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/63cb9709f28aaba108da830645919952.jpg",
     ],
-    type: "snack",
+    category: "snack",
     price: 41000,
   },
   {
@@ -123,7 +123,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/4b5e669a366b2048e36dd5b1cc0d652d.jpg",
     ],
-    type: "snack",
+    category: "snack",
     price: 31000,
   },
   {
@@ -133,7 +133,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/6f0c074738973430bbf70a4f84ed09f7.jpg",
     ],
-    type: "snack",
+    category: "snack",
     price: 14000,
   },
   {
@@ -143,7 +143,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/6f0c074738973430bbf70a4f84ed09f7.jpg",
     ],
-    type: "dessert_drink",
+    category: "dessert_drink",
     price: 29000,
   },
   {
@@ -153,7 +153,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/8f9a4cb3b943dd9d363fe889f1a977f2.png",
     ],
-    type: "dessert_drink",
+    category: "dessert_drink",
     price: 17000,
   },
   {
@@ -163,7 +163,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/31e08694578dae58aa5d0bbfc4d66b38.png",
     ],
-    type: "dessert_drink",
+    category: "dessert_drink",
     price: 17000,
   },
   {
@@ -173,7 +173,7 @@ const sampleDishes = [
     images: [
       "https://kfcvietnam.com.vn/uploads/product/4dd31878f442ea6c57c9e6264efa84b2.jpg",
     ],
-    type: "dessert_drink",
+    category: "dessert_drink",
     price: 17000,
   },
 ];
@@ -234,8 +234,25 @@ const getDishById = async (req, res) => {
   }
 };
 
+const getDishesByCategory = async (req, res) => {
+  const category = req.query.category;
+
+  let predicate = category ? { category: category } : {};
+
+  try {
+    const dishes = await Dish.find(predicate).select(
+      "id name desc ingredient type price images"
+    );
+
+    res.status(200).send(dishes);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
 module.exports = {
   addSampleData,
   allDishes,
   getDishById,
+  getDishesByCategory,
 };

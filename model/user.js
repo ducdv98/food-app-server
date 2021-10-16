@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
+const shortid = require("shortid");
 
 const userSchema = new mongoose.Schema({
+  id: { type: String, unique: true },
   name: { type: String, default: null, trim: true },
   phone_number: {
     type: String,
@@ -28,6 +30,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function (next) {
   const user = this;
+  user.id = shortid.generate();
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 10);
   }
@@ -47,7 +50,7 @@ userSchema.methods.generateAuthToken = async function () {
 
 userSchema.statics.findByCredentials = async (phone_number, password) => {
   const user = await User.findOne({ phone_number });
-  
+
   if (!user) {
     throw new Error({ error: "Invalid login credentials" });
   }
@@ -58,6 +61,6 @@ userSchema.statics.findByCredentials = async (phone_number, password) => {
   return user;
 };
 
-const User = mongoose.model('user', userSchema)
+const User = mongoose.model("user", userSchema);
 
-module.exports = User
+module.exports = User;
