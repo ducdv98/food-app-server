@@ -15,10 +15,10 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use("/v1/users", userRoutes);
-app.use("/v1/dishes", dishRoutes);
-app.use("/v1/categories", categoryRoutes);
-app.use("/v1/cart", cartRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/dishes", dishRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
 app.use(function (req, res, next) {
   res.status(err.status || 404).json({

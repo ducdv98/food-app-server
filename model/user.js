@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: (value) => {
       if (!validator.isMobilePhone(value, ["vi-VN"])) {
-        throw new Error({ error: "Invalid Email address" });
+        throw new Error({ error: "Invalid phone number" });
       }
     },
   },
@@ -41,7 +41,7 @@ userSchema.methods.generateAuthToken = async function () {
   // Generate an auth token for the user
   const user = this;
   const token = jwt.sign({ _id: user._id }, process.env.TOKEN_KEY, {
-    expiresIn: "2h",
+    expiresIn: "24h",
   });
   user.tokens = user.tokens.concat({ token });
   await user.save();
@@ -52,11 +52,11 @@ userSchema.statics.findByCredentials = async (phone_number, password) => {
   const user = await User.findOne({ phone_number });
 
   if (!user) {
-    throw new Error({ error: "Invalid login credentials" });
+    return null;
   }
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    throw new Error({ error: "Invalid login credentials" });
+    return null;
   }
   return user;
 };

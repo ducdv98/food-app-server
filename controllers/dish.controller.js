@@ -188,47 +188,16 @@ const addSampleData = async (req, res) => {
   }
 };
 
-const allDishes = async (req, res) => {
-  try {
-    const dishes = await Dish.find({});
-
-    const formatted = dishes.map((d) => {
-      return {
-        id: d.id,
-        name: d.name,
-        desc: d.desc,
-        ingredient: d.ingredient,
-        type: d.type,
-        price: d.price,
-        images: d.images,
-      };
-    });
-
-    res.status(200).send(formatted);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
 const getDishById = async (req, res) => {
   try {
     const dishId = req.params.id;
-    const dish = await Dish.findOne({ id: dishId });
+    const dish = await Dish.findOne({ id: dishId }).select('id name desc ingredient type price images category -_id');
 
     if (!dish) {
-      res.status(400).send("Not Found");
+      return res.status(400).send("Not Found");
     }
-    const formatted = {
-      id: dish.id,
-      name: dish.name,
-      desc: dish.desc,
-      ingredient: dish.ingredient,
-      type: dish.type,
-      price: dish.price,
-      images: dish.images,
-    };
 
-    res.status(200).send(formatted);
+    res.status(200).send(dish);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -241,10 +210,10 @@ const getDishesByCategory = async (req, res) => {
 
   try {
     const dishes = await Dish.find(predicate).select(
-      "id name desc ingredient type price images"
+      "id name desc category ingredient type price images category -_id"
     );
 
-    res.status(200).send(dishes);
+    return res.status(200).send(dishes);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -252,7 +221,6 @@ const getDishesByCategory = async (req, res) => {
 
 module.exports = {
   addSampleData,
-  allDishes,
   getDishById,
   getDishesByCategory,
 };

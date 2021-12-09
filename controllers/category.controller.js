@@ -35,7 +35,7 @@ const addSampleData = async (req, res) => {
 
 const allCategories = async (req, res) => {
   try {
-    const categories = await Category.find({}).select("id name desc");
+    const categories = await Category.find({}).select("id name desc -_id");
 
     res.status(201).send(categories);
   } catch (error) {

@@ -5,7 +5,7 @@ const register = async (req, res) => {
     const { name, phone_number, password } = req.body;
 
     if (!(name && phone_number && password)) {
-      res.status(400).send("All input is required");
+      return res.status(400).send({ error: "All fields is required" });
     }
 
     const oldUser = await User.findOne({ phone_number });
@@ -16,8 +16,15 @@ const register = async (req, res) => {
 
     const user = new User(req.body);
     await user.save();
-    const token = await user.generateAuthToken();
-    res.status(201).send({ user, token });
+    const accessToken = await user.generateAuthToken();
+
+    const userInfo = {
+      phone_number: user.phone_number,
+      name: user.name,
+      id: user.id,
+    };
+
+    return res.status(201).send({ userInfo, accessToken });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -28,7 +35,7 @@ const login = async (req, res) => {
     const { phone_number, password } = req.body;
 
     if (!(phone_number && password)) {
-      res.status(400).send("All input is required");
+      return res.status(400).send({ error: "All fields are required" });
     }
 
     const user = await User.findByCredentials(phone_number, password);
@@ -37,8 +44,14 @@ const login = async (req, res) => {
         .status(401)
         .send({ error: "Login failed! Check authentication credentials" });
     }
-    const token = await user.generateAuthToken();
-    res.send({ user, token });
+
+    const accessToken = await user.generateAuthToken();
+    const userInfo = {
+      phone_number: user.phone_number,
+      name: user.name,
+      id: user.id,
+    }
+    return res.send({ userInfo, accessToken });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -54,7 +67,7 @@ const logout = async (req, res) => {
       return token.token != req.token;
     });
     await req.user.save();
-    res.send();
+    return res.send();
   } catch (error) {
     res.status(500).send(error);
   }
@@ -64,7 +77,7 @@ const logoutAll = async (req, res) => {
   try {
     req.user.tokens.splice(0, req.user.tokens.length);
     await req.user.save();
-    res.send();
+    return res.send();
   } catch (error) {
     res.status(500).send(error);
   }
