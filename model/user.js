@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
-const shortid = require("shortid");
 
 const userSchema = new mongoose.Schema({
   id: { type: String, unique: true },
@@ -30,7 +29,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function (next) {
   const user = this;
-  user.id = shortid.generate();
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 10);
   }
@@ -40,8 +38,8 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   // Generate an auth token for the user
   const user = this;
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_KEY, {
-    expiresIn: "24h",
+  const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY, {
+    expiresIn: "1y",
   });
   user.tokens = user.tokens.concat({ token });
   await user.save();

@@ -37,7 +37,7 @@ const allCategories = async (req, res) => {
   try {
     const categories = await Category.find({}).select("id name desc -_id");
 
-    res.status(201).send(categories);
+    res.status(200).send(categories);
   } catch (error) {
     res.status(400).send(error);
   }

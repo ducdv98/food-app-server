@@ -7,14 +7,15 @@ const getCart = async (req, res) => {
     const cart = await Cart.findOne({ id: uid });
 
     if (!cart) {
-      res.status(200).send([]);
+      return res.status(200).send([]);
     } else {
       const items = cart.items.map((item) => ({
         id: item.id,
         amount: item.amount,
+        note: item.note,
       }));
 
-      res.status(200).send(items);
+      return res.status(200).send(items);
     }
   } catch (error) {
     res.status(400).send(error);
@@ -37,22 +38,25 @@ const updateCart = async (req, res) => {
       const items = updatedCart.items.map((item) => ({
         id: item.id,
         amount: item.amount,
+        note: item.note,
       }));
-      res.status(200).send(items);
+      return res.status(200).send(items);
     } else {
       const items = cart.items.filter((item) => item.id !== newItem.id);
+
       if (newItem.amount > 0) {
-        items.push(await CartItem.create(newItem));
+        items.push(newItem);
       }
 
-      await Cart.updateOne({ id: uid }, { items: items });
+      await Cart.updateOne({ id: uid }, { items });
 
       const updatedItems = items.map((item) => ({
         id: item.id,
         amount: item.amount,
+        note: item.note,
       }));
 
-      res.status(200).send(updatedItems);
+      return res.status(200).send(updatedItems);
     }
   } catch (error) {
     res.status(400).send(error);
