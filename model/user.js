@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const { UserRoles } = require("../common/user-roles");
 require("dotenv").config();
 
 const userSchema = new mongoose.Schema({
@@ -15,6 +16,10 @@ const userSchema = new mongoose.Schema({
         throw new Error({ error: "Invalid phone number" });
       }
     },
+  },
+  role: {
+    type: String,
+    default: UserRoles.USER,
   },
   password: { type: String, minLength: 6 },
   tokens: [
@@ -38,7 +43,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   // Generate an auth token for the user
   const user = this;
-  const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY, {
+  const token = jwt.sign({ id: user.id, role: user.role }, process.env.TOKEN_KEY, {
     expiresIn: "1y",
   });
   user.tokens = user.tokens.concat({ token });

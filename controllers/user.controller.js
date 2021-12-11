@@ -1,5 +1,6 @@
 const User = require("../model/user");
 const shortid = require("shortid");
+const { UserRoles } = require("../common/user-roles");
 
 const register = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ const register = async (req, res) => {
       return res.status(409).send("User Already Exist. Please Login");
     }
 
-    const user = new User({ ...req.body, id: shortid.generate() });
+    const user = new User({ ...req.body, role: UserRoles.USER, id: shortid.generate() });
     await user.save();
     const accessToken = await user.generateAuthToken();
 
