@@ -29,7 +29,10 @@ const updateCart = async (req, res) => {
 
     const cart = await Cart.findOne({ id: uid });
 
+
     if (!cart) {
+      console.log(newItem)
+
       const updatedCart = await Cart.create({
         id: uid,
         items: [newItem],
