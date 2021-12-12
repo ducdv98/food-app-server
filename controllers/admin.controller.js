@@ -109,6 +109,24 @@ const createCategory = async (req, res) => {
     }
 }
 
+const updateCategory = async (req, res) => {
+    try {
+        const { id, name, desc } = req.body;
+
+        const category = await Category.findOne({ id });
+
+        if (!category) {
+            return res.status(400).send({ error: "Category not existed!" })
+        }
+
+        await Category.updateOne({ id }, { name, desc });
+
+        return res.status(200).send({ name, desc, id });
+
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}
 const createDish = async (req, res) => {
     try {
         const { name, desc, price, images, category } = req.body;
@@ -116,6 +134,25 @@ const createDish = async (req, res) => {
         const id = shortid.generate();
 
         const dish = await Dish.create({ name, desc, price, images, category, id });
+
+        return res.status(200).send({ name, desc, price, images, category, id });
+
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}
+
+const updateDish = async (req, res) => {
+    try {
+        const { id, name, desc, price, images, category } = req.body;
+
+        const dish = await Dish.findOne({ id });
+
+        if (!dish) {
+            return res(400).send({ error: "Dish not existed!" })
+        }
+
+        await Dish.updateOne({ id }, { name, desc, price, images, category });
 
         return res.status(200).send({ name, desc, price, images, category, id });
 
@@ -132,5 +169,7 @@ module.exports = {
     getStatistics,
 
     createCategory,
+    updateCategory,
     createDish,
+    updateDish,
 };

@@ -11,6 +11,8 @@ router.get("/orders/:id", [auth.verifyToken, auth.onlyForAdmin], adminController
 router.get("/statistics", [auth.verifyToken, auth.onlyForAdmin], adminControllers.getStatistics);
 
 router.post("/categories/create", [auth.verifyToken, auth.onlyForAdmin], adminControllers.createCategory);
+router.post("/categories/update", [auth.verifyToken, auth.onlyForAdmin], adminControllers.updateCategory);
 router.post("/dishes/create", [auth.verifyToken, auth.onlyForAdmin], adminControllers.createDish);
+router.post("/dishes/update", [auth.verifyToken, auth.onlyForAdmin], adminControllers.updateDish);
 
 module.exports = router;
