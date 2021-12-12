@@ -3,6 +3,14 @@ const router = express.Router();
 const adminControllers = require("../controllers/admin.controller");
 const auth = require("../middleware/auth");
 
-router.get("/", [auth.verifyToken, auth.onlyForAdmin], adminControllers.testAdmin);
+router.post("/orders/update", [auth.verifyToken, auth.onlyForAdmin], adminControllers.updateOrderStatus);
+router.get("/orders", [auth.verifyToken, auth.onlyForAdmin], adminControllers.getOrders);
+router.get("/orders/:id", [auth.verifyToken, auth.onlyForAdmin], adminControllers.getOrderById);
+
+
+router.get("/statistics", [auth.verifyToken, auth.onlyForAdmin], adminControllers.getStatistics);
+
+router.post("/categories/create", [auth.verifyToken, auth.onlyForAdmin], adminControllers.createCategory);
+router.post("/dishes/create", [auth.verifyToken, auth.onlyForAdmin], adminControllers.createDish);
 
 module.exports = router;
